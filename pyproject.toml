@@ -3,7 +3,7 @@ name = "nextchile"
 authors = [
     { name = "alvaro", email = "alvaroflmiranda@gmail.com"}
 ]
-description = "chile compat"
+description = "ERPNext features and add-ons tailored for Chilean businesses"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
