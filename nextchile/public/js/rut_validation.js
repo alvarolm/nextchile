@@ -1,46 +1,48 @@
-// Chilean RUT validation for client-side
+/**
+ * Chilean RUT validation for client-side
+ * Based on nocrop's Rut-Chileno-en-Python implementation
+ * https://github.com/nocrop/Rut-Chileno-en-Python
+ * 
+ * Original code by nocrop, licensed under MIT License
+ * Adapted for JavaScript/ERPNext by nextchile app
+ */
+
 function validateChileanRUT(rut) {
     if (!rut) return false;
     
-    // Clean RUT: remove dots and convert to uppercase
-    const cleanRUT = rut.replace(/\./g, '').replace(/\s/g, '').toUpperCase();
-    
-    // Check format: 7-8 digits + hyphen + check digit
-    if (!/^\d{7,8}-[0-9K]$/.test(cleanRUT)) {
+    try {
+        // Clean RUT using nocrop's method - remove dots, hyphens, and convert to uppercase
+        rut = rut.toUpperCase().replace(/-/g, '').replace(/\./g, '');
+        const rutAux = rut.slice(0, -1);
+        const dv = rut.slice(-1);
+        
+        // Check if rutAux is numeric and within realistic range (1,000,000 to 25,000,000)
+        if (!/^\d+$/.test(rutAux) || !(1000000 <= parseInt(rutAux) && parseInt(rutAux) <= 25000000)) {
+            return false;
+        }
+        
+        // Reverse the digits and apply nocrop's algorithm
+        const revertido = rutAux.split('').reverse().map(d => parseInt(d));
+        const factors = [2, 3, 4, 5, 6, 7];
+        let suma = 0;
+        
+        for (let i = 0; i < revertido.length; i++) {
+            suma += revertido[i] * factors[i % 6];
+        }
+        
+        const residuo = suma % 11;
+        
+        if (dv === 'K') {
+            return residuo === 1;
+        }
+        if (dv === '0') {
+            return residuo === 11;
+        }
+        return residuo === 11 - parseInt(dv);
+        
+    } catch (error) {
         return false;
     }
-    
-    // Split RUT and check digit
-    const parts = cleanRUT.split('-');
-    if (parts.length !== 2) return false;
-    
-    const rutNumber = parts[0];
-    const checkDigit = parts[1];
-    
-    // Calculate check digit
-    const calculatedCheckDigit = calculateRUTCheckDigit(rutNumber);
-    
-    return checkDigit === calculatedCheckDigit;
-}
-
-function calculateRUTCheckDigit(rutNumber) {
-    const multipliers = [2, 3, 4, 5, 6, 7];
-    let total = 0;
-    
-    // Process digits from right to left
-    for (let i = 0; i < rutNumber.length; i++) {
-        const digit = parseInt(rutNumber[rutNumber.length - 1 - i]);
-        const multiplier = multipliers[i % 6];
-        total += digit * multiplier;
-    }
-    
-    // Calculate check digit
-    const remainder = total % 11;
-    const checkDigit = 11 - remainder;
-    
-    if (checkDigit === 11) return '0';
-    if (checkDigit === 10) return 'K';
-    return checkDigit.toString();
 }
 
 function formatChileanRUT(rut) {

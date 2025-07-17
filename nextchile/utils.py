@@ -1,13 +1,26 @@
+"""
+Chilean RUT Validation for ERPNext
+Based on nocrop's Rut-Chileno-en-Python implementation
+https://github.com/nocrop/Rut-Chileno-en-Python
+
+Original code by nocrop, licensed under MIT License
+Adapted for ERPNext integration by nextchile app
+"""
+
 import re
 import frappe
+from itertools import cycle
 
 
 def validate_chilean_rut(rut):
     """
-    Validates Chilean RUT (Rol Único Tributario) format and check digit.
+    Validates Chilean RUT (Rol Único Tributario) using nocrop's algorithm.
+    
+    This implementation is based on nocrop's Rut-Chileno-en-Python:
+    https://github.com/nocrop/Rut-Chileno-en-Python
     
     Args:
-        rut (str): RUT string in format XX.XXX.XXX-X or XXXXXXXX-X
+        rut (str): RUT string in any format (with/without dots and hyphens)
         
     Returns:
         bool: True if RUT is valid, False otherwise
@@ -15,55 +28,28 @@ def validate_chilean_rut(rut):
     if not rut:
         return False
     
-    # Clean RUT: remove dots and convert to uppercase
-    clean_rut = rut.replace(".", "").replace(" ", "").upper()
-    
-    # Check format: 8-9 digits + hyphen + check digit
-    if not re.match(r'^\d{7,8}-[0-9K]$', clean_rut):
-        return False
-    
-    # Split RUT and check digit
-    parts = clean_rut.split("-")
-    if len(parts) != 2:
-        return False
-    
-    rut_number = parts[0]
-    check_digit = parts[1]
-    
-    # Calculate check digit
-    calculated_check_digit = calculate_rut_check_digit(rut_number)
-    
-    return check_digit == calculated_check_digit
+    try:
+        # Clean RUT using nocrop's method
+        rut = rut.upper().replace("-", "").replace(".", "")
+        rut_aux = rut[:-1]
+        dv = rut[-1:]
 
+        if not rut_aux.isdigit() or not (1_000_000 <= int(rut_aux) <= 25_000_000):
+            return False
 
-def calculate_rut_check_digit(rut_number):
-    """
-    Calculates the check digit for a Chilean RUT number.
+        revertido = map(int, reversed(rut_aux))
+        factors = cycle(range(2, 8))
+        suma = sum(d * f for d, f in zip(revertido, factors))
+        residuo = suma % 11
+
+        if dv == 'K':
+            return residuo == 1
+        if dv == '0':
+            return residuo == 11
+        return residuo == 11 - int(dv)
     
-    Args:
-        rut_number (str): RUT number without check digit
-        
-    Returns:
-        str: Check digit (0-9 or K)
-    """
-    multipliers = [2, 3, 4, 5, 6, 7]
-    total = 0
-    
-    # Process digits from right to left
-    for i, digit in enumerate(reversed(rut_number)):
-        multiplier = multipliers[i % 6]
-        total += int(digit) * multiplier
-    
-    # Calculate check digit
-    remainder = total % 11
-    check_digit = 11 - remainder
-    
-    if check_digit == 11:
-        return "0"
-    elif check_digit == 10:
-        return "K"
-    else:
-        return str(check_digit)
+    except (ValueError, IndexError):
+        return False
 
 
 def format_chilean_rut(rut):
