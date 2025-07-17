@@ -2,13 +2,18 @@
 
 ERPNext features and add-ons tailored for Chilean businesses
 
+Features:
+
+- Validates the tax_id field in Customer, Supplier and Company docs
+
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
+bench get-app https://github.com/alvarolm/nextchile.git --branch develop
 bench install-app nextchile
 ```
 
