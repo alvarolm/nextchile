@@ -26,7 +26,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/nextchile/css/nextchile.css"
-# app_include_js = "/assets/nextchile/js/nextchile.js"
+app_include_js = "/assets/nextchile/js/rut_validation.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/nextchile/css/nextchile.css"
@@ -137,13 +137,17 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Customer": {
+		"validate": "nextchile.utils.validate_tax_id"
+	},
+	"Supplier": {
+		"validate": "nextchile.utils.validate_tax_id"
+	},
+	"Company": {
+		"validate": "nextchile.utils.validate_tax_id"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
