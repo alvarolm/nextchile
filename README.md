@@ -4,7 +4,7 @@ ERPNext features and add-ons tailored for Chilean businesses
 
 Features:
 
-- Validates the tax_id field in Customer, Supplier and Company docs
+- Validates the tax_id field (as RUT, [Rol Único Tributario](https://es.wikipedia.org/wiki/Rol_%C3%9Anico_Tributario), uses [nocrop](https://github.com/nocrop/Rut-Chileno-en-Python) implementation) for Customer, Supplier and Company docs
 
 
 ### Installation
