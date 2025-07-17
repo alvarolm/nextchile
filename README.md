@@ -1,6 +1,6 @@
 ### Nextchile
 
-funcionalidades y complementos que facilitan el uso de erpnext para chile
+ERPNext features and add-ons tailored for Chilean businesses
 
 ### Installation
 
