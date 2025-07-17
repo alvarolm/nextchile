@@ -1,6 +1,6 @@
 ### Nextchile
 
-chile compat
+funcionalidades y complementos que facilitan el uso de erpnext para chile
 
 ### Installation
 
