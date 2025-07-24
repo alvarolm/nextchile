@@ -83,7 +83,7 @@ app_include_js = "/assets/nextchile/js/rut_validation.js"
 # ------------
 
 # before_install = "nextchile.install.before_install"
-# after_install = "nextchile.install.after_install"
+after_install = "nextchile.install.after_install"
 
 # Uninstallation
 # ------------
@@ -146,6 +146,24 @@ doc_events = {
 	},
 	"Company": {
 		"validate": "nextchile.utils.validate_tax_id"
+	},
+	"Sales Invoice": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
+	},
+	"Purchase Invoice": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
+	},
+	"Sales Order": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
+	},
+	"Purchase Order": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
+	},
+	"Quotation": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
+	},
+	"Supplier Quotation": {
+		"validate": "nextchile.tax_rounding.apply_row_level_tax_rounding"
 	}
 }
 
